@@ -1,0 +1,2 @@
+package au.koi.mms.model;
+public enum MemberType { REGULAR, PT }
