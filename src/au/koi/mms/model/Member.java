@@ -7,7 +7,6 @@ public abstract class Member {
     private boolean goalAchieved;
     private int discountPercent;          // 0..100
     private MemberType type;
-
     protected Member(String id, String name, String email, String phone,
                      double baseFee, int performanceRating,
                      boolean goalAchieved, int discountPercent, MemberType type) {
@@ -16,8 +15,6 @@ public abstract class Member {
         this.goalAchieved = goalAchieved; this.discountPercent = discountPercent;
         this.type = type;
     }
-
-    // getters
     public String getId(){ return id; }
     public String getName(){ return name; }
     public String getEmail(){ return email; }
@@ -27,8 +24,6 @@ public abstract class Member {
     public boolean isGoalAchieved(){ return goalAchieved; }
     public int getDiscountPercent(){ return discountPercent; }
     public MemberType getType(){ return type; }
-
-    // setters
     public void setName(String v){ name=v; }
     public void setEmail(String v){ email=v; }
     public void setPhone(String v){ phone=v; }
@@ -36,9 +31,7 @@ public abstract class Member {
     public void setPerformanceRating(int v){ performanceRating=v; }
     public void setGoalAchieved(boolean v){ goalAchieved=v; }
     public void setDiscountPercent(int v){ discountPercent=Math.max(0,Math.min(100,v)); }
-
     public abstract double calculateFee();
-
     public String toCsv(){
         return String.join(",",
                 id, name, type.name(), email, phone,
@@ -47,10 +40,8 @@ public abstract class Member {
                 String.valueOf(goalAchieved),
                 String.valueOf(discountPercent));
     }
-
     @Override public String toString() {
         return id + " | " + name + " | " + type + " | fee $" + calculateFee();
     }
-
     protected static double round2(double v){ return Math.round(v*100.0)/100.0; }
 }
