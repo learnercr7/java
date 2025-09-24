@@ -1,0 +1,26 @@
+package au.koi.mms.repo;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import au.koi.mms.model.Member;
+
+/** CSV-centric repository that delegates to the in-memory store. */
+public class CsvMemberRepository implements MemberRepository {
+    private final InMemoryMemberRepository delegate = new InMemoryMemberRepository();
+
+    public CsvMemberRepository() { }
+    public CsvMemberRepository(Path csvPath) throws IOException {
+        loadFromCsv(csvPath);
+    }
+
+    @Override public List<Member> findAll() { return delegate.findAll(); }
+    @Override public void add(Member m) { delegate.add(m); }
+    @Override public boolean update(Member m) { return delegate.update(m); }
+    @Override public boolean deleteById(String id) { return delegate.deleteById(id); }
+    @Override public void clear() { delegate.clear(); }
+    @Override public int size() { return delegate.size(); }
+    @Override public void loadFromCsv(Path path) throws IOException { delegate.loadFromCsv(path); }
+    @Override public void saveToCsv(Path path) throws IOException { delegate.saveToCsv(path); }
+}
