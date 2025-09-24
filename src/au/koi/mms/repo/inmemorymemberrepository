@@ -1,0 +1,60 @@
+package au.koi.mms.repo;
+
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+import au.koi.mms.model.Member;
+
+public class InMemoryMemberRepository implements MemberRepository {
+    private final List<Member> data = new ArrayList<>();
+
+    @Override public List<Member> findAll(){ return Collections.unmodifiableList(data); }
+    @Override public void add(Member m){ data.add(m); }
+    @Override public boolean update(Member m){
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getId().equalsIgnoreCase(m.getId())) {
+                data.set(i, m);
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override public boolean deleteById(String id){ return data.removeIf(x -> x.getId().equalsIgnoreCase(id)); }
+    @Override public void clear(){ data.clear(); }
+    @Override public int size(){ return data.size(); }
+
+    @Override
+    public void loadFromCsv(Path path) throws IOException {
+        clear();
+        try (BufferedReader br = Files.newBufferedReader(path)) {
+            String line = br.readLine(); // header
+            int lineNo = 1;
+            while ((line = br.readLine()) != null) {
+                lineNo++;
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                String[] t = line.split(",", -1);
+                try {
+                    data.add(CsvUtil.fromFields(t));
+                } catch (Exception ex) {
+                    System.err.println("Skip row " + lineNo + ": " + ex.getMessage());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void saveToCsv(Path path) throws IOException {
+        Path parent = path.toAbsolutePath().getParent();
+        if (parent != null) Files.createDirectories(parent);
+        try (BufferedWriter bw = Files.newBufferedWriter(path)) {
+            bw.write("id,name,type,email,phone,baseFee,performanceRating,goalAchieved,discountPercent");
+            bw.newLine();
+            for (Member m : data) {
+                bw.write(m.toCsv());
+                bw.newLine();
+            }
+        }
+    }
+}
