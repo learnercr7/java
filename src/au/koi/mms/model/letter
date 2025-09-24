@@ -1,0 +1,46 @@
+package au.koi.mms.model;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+public class Letter {
+    private final String memberId;
+    private final String memberName;
+    private final LetterType type;
+    private final String body;
+    private final LocalDate date;   // freeze the date when the letter is created
+
+    public Letter(String memberId, String memberName, LetterType type, String body){
+        this.memberId = Objects.requireNonNull(memberId, "memberId");
+        this.memberName = Objects.requireNonNull(memberName, "memberName");
+        this.type = Objects.requireNonNull(type, "type");
+        this.body = Objects.requireNonNull(body, "body");
+        this.date = LocalDate.now();
+    }
+
+    public String getMemberId(){ return memberId; }
+    public String getMemberName(){ return memberName; }
+    public LetterType getType(){ return type; }
+    public String getBody(){ return body; }
+    public LocalDate getDate(){ return date; }
+
+    /** Short one-line summary for console output. */
+    public String summaryLine(){
+        return type + " -> " + memberId + " " + memberName;
+    }
+
+    /** Suggested subject line if you later email these letters. */
+    public String subjectLine(){
+        return (type == LetterType.APPRECIATION ? "Appreciation" : "Reminder")
+                + " for " + memberName + " (" + memberId + ")";
+    }
+
+    /** Full formatted text saved to file. */
+    @Override
+    public String toString(){
+        return "Date: " + date + "\n"
+             + "Type: " + type + "\n"
+             + "Member: " + memberName + " (" + memberId + ")\n\n"
+             + body + "\n";
+    }
+}
